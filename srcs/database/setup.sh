@@ -14,7 +14,7 @@ if [ -d "/var/lib/mysql/mysql"]; then
     echo "${RED}MariaDB already configured...${NC}"
     
 else
-SQL_FILE="/tmp/commandline"
+SQL_FILE="/tmp/init.sql"
 cat > "$SQL_FILE" << SQL
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 CREATE DATABASE IF NOT EXISTS `${WORDPRESS_DB}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
