@@ -1,0 +1,11 @@
+services :
+  database :
+    image : database
+    volume : db-data:/var/lib
+
+volumes:
+  db-data:
+    driver: local
+    driver_opts:
+      type: none
+      device : "/home/csenelle/data/db"
