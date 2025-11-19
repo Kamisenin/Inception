@@ -1,9 +1,4 @@
-FROM alpine:3.22.2
-
-ENV MYSQL_ROOT_PASSWORD=b2br
-ENV WORDPRESS_PASSWORD=wppasswd
-ENV WORDPRESS_DB=wordpress
-ENV WORDPRESS_USER:=wpuser
+FROM alpine:3.20.0
 
 EXPOSE 3306
 
@@ -12,7 +7,8 @@ COPY ["setup.sh", "/var/lib/mysql/"]
 
 RUN \
     apk add --no-cache mariadb mariadb-client && \
+    chown -R mysql:mysql /var/lib/mysql && \
     chmod +x /var/lib/mysql/setup.sh
 
 ENTRYPOINT ["/var/lib/mysql/setup.sh"]
-CMD ["mariadb", "--user=mysql", "--datadir=/var/lib/mysql", "--bind-address=0.0.0.0"]
+CMD ["mariadbd", "--user=mysql", "--datadir=/var/lib/mysql", "--bind-address=0.0.0.0", "--socket=/run/mysqld/mysqld.sock"]

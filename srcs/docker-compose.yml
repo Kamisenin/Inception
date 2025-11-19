@@ -2,6 +2,7 @@ services :
   database :
     image : database
     volume : db-data:/var/lib
+    env_file : .env
 
 volumes:
   db-data:

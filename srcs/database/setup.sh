@@ -1,17 +1,10 @@
-RED='\033[0;31m'
-Green='\033[0;32m'
-NC='\033[0m'
+#!/bin/sh
 
 echo "Generating MariaDB configuration..."
 
-: "${MYSQL_ROOT_PASSWORD:?You have to define MYSQL_ROOT_PASSWORD}"
-: "${WORDPRESS_DB:=wordpress}"
-: "${WORDPRESS_USER:=wpuser}"
-: "${WORDPRESS_PASSWORD:?You have To Define WORDPRESS_PASSWORD}"
-
-if [ -d "/var/lib/mysql/mysql"]; then
+if [ -d "/var/lib/mysql/mysql" ]; then
     
-    echo "${RED}MariaDB already configured...${NC}"
+    echo "MariaDB already configured..."
     
 else
 SQL_FILE="/tmp/init.sql"
@@ -23,8 +16,9 @@ GRANT ALL PRIVILEGES ON `${WORDPRESS_DB}`.* TO '${WORDPRESS_USER}'@'%';
 FLUSH PRIVILEGES;
 SQL
 
-mariadb --user=mysql --datadir=/var/lib/mysql --bootstrap < "$SQL_FILE"
+mariadbd --user=mysql --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock --bootstrap < "$SQL_FILE"
 rm -f "$SQL_FILE"
 fi
 
-echo "${Green}Starting MariaDB...${NC}"
+echo "Starting MariaDB..."
+exec "$@"
