@@ -1,12 +1,19 @@
 services :
-  database :
-    image : database
-    volume : db-data:/var/lib
-    env_file : .env
+  mariadb :
+    build: ./database
+ #   restart: unless-stopped
+    container_name: mariadb
+    env_file: .env
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    
 
 volumes:
   db-data:
     driver: local
     driver_opts:
       type: none
-      device : "/home/csenelle/data/db"
+      o : bind
+      device : "${DATA_PATH}/data/db"
