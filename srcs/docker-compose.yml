@@ -1,19 +1,25 @@
 services :
   mariadb :
-    build: ./database
- #   restart: unless-stopped
+    build: database
+    restart: on-failure
     container_name: mariadb
     env_file: .env
     volumes:
-      - db-data:/var/lib/mysql
+      - ${DATA_PATH}/data/db:/var/lib/mysql
     ports:
       - "3306:3306"
-    
+  wordpress :
+    build: wordpress
+    restart: on-failure
+    container_name: wordpress
+    env_file: .env
+    depends_on:
+      - mariadb
+    ports:
+      - 9000:9000
+    volumes:
+      - ${DATA_PATH}/data/wordpress
 
-volumes:
-  db-data:
-    driver: local
-    driver_opts:
-      type: none
-      o : bind
-      device : "${DATA_PATH}/data/db"
+networks:
+  inception:
+    driver: bridge
