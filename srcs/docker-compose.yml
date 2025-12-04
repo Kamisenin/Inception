@@ -1,24 +1,40 @@
 services :
   mariadb :
     build: database
-    restart: on-failure
     container_name: mariadb
+    restart: on-failure
     env_file: .env
     volumes:
       - ${DATA_PATH}/data/db:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - inception
+
   wordpress :
     build: wordpress
-    restart: on-failure
     container_name: wordpress
+    restart: on-failure
     env_file: .env
     depends_on:
       - mariadb
     ports:
       - 9000:9000
     volumes:
-      - ${DATA_PATH}/data/wordpress
+      - ${DATA_PATH}/data/wordpress:/var/www/html
+    networks:
+      - inception
+  
+  nginx:
+    build: nginx
+    container_name : nginx
+    restart: on-failure
+    ports:
+      - "443:443"
+    volumes:
+      - ${DATA_PATH}/data/wordpress:/var/ww/html
+    networks:
+      - inception
 
 networks:
   inception:

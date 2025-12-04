@@ -1,31 +1,47 @@
-from alpine:3.21.5
+FROM alpine:3.21.5
 
 EXPOSE 9000
 
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
-        lighttpd \
-        php \
-        fcgi \
-        php-cgi
+        php84 \
+        php84-fpm \
+        php84-mysqli \
+        php84-json \
+        php84-openssl \
+        php84-curl \
+        php84-zlib \
+        php84-xml \
+        php84-phar \
+        php84-intl \
+        php84-dom \
+        php84-xmlreader \
+        php84-ctype \
+        php84-session \
+        php84-mbstring \
+        php84-gd \
+        php84-zip \
+        php84-exif \
+        php84-fileinfo \
+        php84-tokenizer \
+        php84-simplexml \
+        php-cli \
+        curl \
+        mariadb-client
 
-COPY conf/lighttpd.conf /etc/lighttpd/
+#We get Wordpress CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \ 
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
 
-RUN rc-service lighttpd start \
-    && rc-update add lighttpd default
+COPY conf/php.ini /etc/php84/php.ini
+# COPY ./www.conf /etc/php84/php-fpm.d/
 
-RUN apk add --no-cache \
-    wget \
-    mysql \
-    mysql-client \
-    php82-mysqli
+COPY setup_wp.sh /bin/setup_wp.sh
 
-RUN rc-service lighttpd restart
+WORKDIR /var/www/html
 
-RUN mkdir -p /usr/share/webapps/ \
-    && cd /usr/share/webapps/ \
-    && wget https://wordpress.org/latest.tar.gz \
-    && tar -xzvf latest.tar.gz \
-    && rm latest.tar.gz \
-    && chown -R lighttpd /usr/share/webapps/
+RUN chmod +x /bin/setup_wp.sh
+
+ENTRYPOINT ["/bin/setup_wp.sh"]
