@@ -2,6 +2,15 @@
 
 set -e
 
+
+echo "Waiting for MariaDB..."
+until nc -z -v -w3 mariadb 3306; do
+	sleep 1
+done
+
+
+echo "MariaDB up..."
+
 if [ -f "/var/www/html/wp-config.php" ]; then
 	echo "WordPress already installed, skipping installation."
 else
@@ -27,10 +36,10 @@ else
 		--admin_email=$WORDPRESS_ADMIN_EMAIL \
 		--skip-email
 	
-	--allow-root user create	--path="/var/www/html" \
-		$WORDPRESS_USER $WORDPRESS_USER_EMAIL \
+	wp --allow-root user create $WORDPRESS_USER $WORDPRESS_USER_EMAIL \
+		--path="/var/www/html" \
 		--user_pass=$WORDPRESS_USER_PASSWD \
 		--role='contributor'
 fi
 
-exec "php-fpm84 -F"
+exec php-fpm84 -F

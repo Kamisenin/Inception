@@ -26,9 +26,10 @@ RUN apk update \
         php84-fileinfo \
         php84-tokenizer \
         php84-simplexml \
-        php-cli \
         curl \
         mariadb-client
+
+RUN mv /usr/bin/php84 /usr/bin/php
 
 #We get Wordpress CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \ 
@@ -36,12 +37,11 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && mv wp-cli.phar /usr/local/bin/wp
 
 COPY conf/php.ini /etc/php84/php.ini
-# COPY ./www.conf /etc/php84/php-fpm.d/
+COPY conf/www.conf /etc/php84/php-fpm.d/
 
 COPY setup_wp.sh /bin/setup_wp.sh
+RUN chmod +x /bin/setup_wp.sh
 
 WORKDIR /var/www/html
-
-RUN chmod +x /bin/setup_wp.sh
 
 ENTRYPOINT ["/bin/setup_wp.sh"]
