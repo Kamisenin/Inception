@@ -5,9 +5,7 @@ services :
     restart: on-failure
     env_file: .env
     volumes:
-      - ${DATA_PATH}/data/db:/var/lib/mysql
-    ports:
-      - "3306:3306"
+      - db-data:/var/lib/mysql
     networks:
       - inception
 
@@ -18,10 +16,8 @@ services :
     env_file: .env
     depends_on:
       - mariadb
-    ports:
-      - 9000:9000
     volumes:
-      - ${DATA_PATH}/data/wordpress:/var/www/html
+      - wp-data:/var/www/html
     networks:
       - inception
   
@@ -32,10 +28,25 @@ services :
     ports:
       - "443:443"
     volumes:
-      - ${DATA_PATH}/data/wordpress:/var/ww/html
+      - wp-data:/var/ww/html
     networks:
       - inception
 
 networks:
   inception:
+    name: inception
     driver: bridge
+
+volumes:
+  db-data :
+    driver: local
+    driver_opts:
+       o: bind
+       type: none
+       device: ${DATA_PATH}/data/db
+  wp-data:
+    driver: local
+    driver_opts:
+       o: bind
+       type: none
+       device: ${DATA_PATH}/data/wordpress
