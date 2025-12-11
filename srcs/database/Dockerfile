@@ -8,7 +8,7 @@ RUN mkdir -p /run/mysqld
 
 RUN \
     apk add --no-cache mariadb mariadb-client && \
-    mariadb-install-db --user=mysql --datadir=/var/lib/mysql && \
+    mariadb-install-db --basedir=/usr --user=mysql --datadir=/var/lib/mysql && \
     chown -R mysql:mysql /run/mysqld /var/lib/mysql && \
     chmod +x /bin/setup_db.sh
 

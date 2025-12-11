@@ -2,15 +2,6 @@
 
 set -e
 
-
-echo "Waiting for MariaDB..."
-until nc -z -v -w3 mariadb 3306; do
-	sleep 1
-done
-
-
-echo "MariaDB up..."
-
 if [ -f "/var/www/html/wp-config.php" ]; then
 	echo "WordPress already installed, skipping installation."
 else
@@ -22,8 +13,8 @@ else
 	echo "Creating config"
 	wp --allow-root config create --path="/var/www/html" \
 		--dbname=$WORDPRESS_DB \
-		--dbuser=$WORDPRESS_USER \
-		--dbpass=$WORDPRESS_PASSWORD \
+		--dbuser=$WORDPRESS_DB_USER \
+		--dbpass=$WORDPRESS_DB_PASSWORD \
 		--dbhost=$WORDPRESS_DB_HOST \
 		--skip-check
 

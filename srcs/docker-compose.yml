@@ -8,6 +8,12 @@ services :
       - db-data:/var/lib/mysql
     networks:
       - inception
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "health", "-phealth", "--skip-ssl"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
 
   wordpress :
     build: wordpress
@@ -15,7 +21,8 @@ services :
     restart: on-failure
     env_file: .env
     depends_on:
-      - mariadb
+      mariadb :
+        condition: service_healthy
     volumes:
       - wp-data:/var/www/html
     networks:
@@ -27,10 +34,12 @@ services :
     restart: on-failure
     ports:
       - "443:443"
-    volumes:
-      - wp-data:/var/ww/html
     networks:
       - inception
+    depends_on:
+      - wordpress
+    volumes:
+      - wp-data:/var/www/html
 
 networks:
   inception:

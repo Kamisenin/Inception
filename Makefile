@@ -17,6 +17,7 @@ fclean:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	docker system prune -af --volumes
 	docker volume prune -af
+	sudo rm -rf ~/data
 
 re: down clean up
 
