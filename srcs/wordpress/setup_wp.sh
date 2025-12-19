@@ -2,15 +2,19 @@
 
 set -e
 
-if [ -f "/var/www/html/wp-config.php" ]; then
-	echo "WordPress already installed, skipping installation."
-else
-	echo "wp-config.php not found. Installing and configuring wordpress..."
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
+}
 
-	echo "Downloading WordPress core"
+if [ -f "/var/www/html/wp-config.php" ]; then
+	log "WordPress already installed, skipping installation."
+else
+	log "wp-config.php not found. Installing and configuring wordpress..."
+
+	log "Downloading WordPress core"
 	wp --allow-root core download --path="/var/www/html"
 
-	echo "Creating config"
+	log "Creating config"
 	wp --allow-root config create --path="/var/www/html" \
 		--dbname=$WORDPRESS_DB \
 		--dbuser=$WORDPRESS_DB_USER \
@@ -18,7 +22,7 @@ else
 		--dbhost=$WORDPRESS_DB_HOST \
 		--skip-check
 
-	echo "Installing Wordpress core"
+	log "Installing Wordpress core"
 	wp --allow-root core install	--path="/var/www/html" \
 		--url=$WORDPRESS_URL \
 		--title=$WORDPRESS_TITLE \
@@ -31,6 +35,14 @@ else
 		--path="/var/www/html" \
 		--user_pass=$WORDPRESS_USER_PASSWD \
 		--role='contributor'
+
+	log "Installing Redis plugin"
+	wp --allow-root config set WP_REDIS_PORT 6379
+	wp --allow-root config set WP_REDIS_HOST redis
+	wp --allow-root config set WP_CACHE_KEY_SALT $WORDPRESS_URL
+	wp plugin install redis-cache --activate
+	wp --allow-root plugin update --all
+	wp --allow-root redis enable
 fi
 
 exec php-fpm84 -F
