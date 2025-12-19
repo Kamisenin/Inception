@@ -1,5 +1,5 @@
-services :
-  mariadb :
+services:
+  mariadb:
     build: database
     container_name: mariadb
     restart: on-failure
@@ -9,20 +9,22 @@ services :
     networks:
       - inception
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "health", "-phealth", "--skip-ssl"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "health", "-phealth", "--skip-ssl"]
       interval: 5s
       timeout: 3s
       retries: 10
       start_period: 10s
 
-  wordpress :
+  wordpress:
     build: wordpress
     container_name: wordpress
     restart: on-failure
     env_file: .env
     depends_on:
-      mariadb :
-        condition: service_healthy
+      mariadb:
+         condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - wp-data:/var/www/html
     networks:
@@ -30,7 +32,7 @@ services :
   
   nginx:
     build: nginx
-    container_name : nginx
+    container_name: nginx
     restart: on-failure
     ports:
       - "443:443"
@@ -38,8 +40,31 @@ services :
       - inception
     depends_on:
       - wordpress
+      - adminer
     volumes:
       - wp-data:/var/www/html
+  
+  # ------ bonus ------
+
+  redis:
+    build: bonus/redis
+    container_name: redis
+    restart: on-failure
+    env_file: .env
+    ports:
+      - "6379:6379"
+    networks:
+      - inception
+  
+  adminer:
+    build: bonus/adminer
+    container_name: adminer
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    depends_on:
+      mariadb :
+         condition: service_healthy
 
 networks:
   inception:

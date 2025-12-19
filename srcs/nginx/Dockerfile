@@ -7,7 +7,8 @@ RUN apk update \
 		openssl \
     && rm -rf /var/cache/apk/*
 
-COPY conf/server.conf /etc/nginx/http.d
+COPY conf/wordpress.conf /etc/nginx/http.d
+COPY conf/adminer.conf /etc/nginx/http.d
 
 RUN mkdir -p /etc/nginx/ssl/ \
 	&& apk add openssl \
