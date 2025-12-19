@@ -1,7 +1,5 @@
 FROM alpine:3.21.5
 
-EXPOSE 9000
-
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
@@ -43,5 +41,7 @@ COPY setup_wp.sh /bin/setup_wp.sh
 RUN chmod +x /bin/setup_wp.sh
 
 WORKDIR /var/www/html
+
+EXPOSE 9000
 
 ENTRYPOINT ["/bin/setup_wp.sh"]
