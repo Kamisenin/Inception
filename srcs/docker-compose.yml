@@ -67,6 +67,16 @@ services:
          condition: service_healthy
     networks:
       - inception
+    
+  # ftp:
+  #   build: bonus/ftp
+  #   container_name: ftp
+  #   restart: on-failure
+  #   volumes:
+  #    - wp-data:/var/www/html
+  #   ports: "21:21"
+  #   networks:
+  #    - inception
 
 networks:
   inception:

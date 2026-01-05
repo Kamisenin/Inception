@@ -12,7 +12,7 @@ RUN \
 
 COPY "conf/mariadb-server.cnf" "/etc/my.cnf.d/"
 
-EXPOSE 3306
+EXPOSE 3306         
 
 ENTRYPOINT ["/bin/setup_db.sh"]
 CMD ["mariadbd"]

@@ -24,7 +24,7 @@ else
 
 	log "Installing Wordpress core"
 	wp --allow-root core install	--path="/var/www/html" \
-		--url=$WORDPRESS_URL \
+		--url=csenelle.42.fr \
 		--title=$WORDPRESS_TITLE \
 		--admin_user=$WORDPRESS_ADMIN \
 		--admin_password=$WORDPRESS_ADMIN_PASSWORD \
@@ -39,7 +39,7 @@ else
 	log "Installing Redis plugin"
 	wp --allow-root config set WP_REDIS_PORT 6379
 	wp --allow-root config set WP_REDIS_HOST redis
-	wp --allow-root config set WP_CACHE_KEY_SALT $WORDPRESS_URL
+	wp --allow-root config set WP_CACHE_KEY_SALT csenelle.42.fr
 	wp plugin install redis-cache --activate
 	wp --allow-root plugin update --all
 	wp --allow-root redis enable
