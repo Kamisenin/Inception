@@ -85,8 +85,6 @@ services:
     build: bonus/static_page
     container_name: static_page
     restart: on-failure
-    ports:
-      - "1818:1818"
     networks:
      - inception
 
