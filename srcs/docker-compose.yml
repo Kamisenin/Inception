@@ -68,15 +68,18 @@ services:
     networks:
       - inception
     
-  # ftp:
-  #   build: bonus/ftp
-  #   container_name: ftp
-  #   restart: on-failure
-  #   volumes:
-  #    - wp-data:/var/www/html
-  #   ports: "21:21"
-  #   networks:
-  #    - inception
+  ftp:
+    build: bonus/ftp
+    container_name: ftp
+    restart: on-failure
+    env_file: .env
+    volumes:
+     - wp-data:/var/www/html
+    ports: 
+      - "21:21"
+      - "21210-21220:21210-21220"
+    networks:
+     - inception
 
 networks:
   inception:

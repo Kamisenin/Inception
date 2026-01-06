@@ -2,11 +2,26 @@
 
 set -e
 
-echo "Generating MariaDB configuration..."
-
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
 }
+
+log "Generating MariaDB configuration..."
+
+check_var() {
+    local var_name="$1"
+    local var_value="$2"
+    
+    if [ -z "$var_value" ]; then
+        log "ERROR: Environment variable $var_name has not been set or is empty"
+        exit 1
+    fi
+}
+
+check_var "DB_ROOT_PASSWD" "$DB_ROOT_PASSWD"
+check_var "DB_NAME" "$DB_NAME"
+check_var "DB_USER" "$DB_USER"
+check_var "DB_USER_PASSWD" "$DB_USER_PASSWD"
 
 
 if [ -f "/var/lib/mysql/mysql/init_manifesto" ]; then
@@ -16,7 +31,7 @@ else
 
     mariadbd -u mysql --bootstrap << EOF
         FLUSH PRIVILEGES;
-        ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD';
+        ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWD';
         FLUSH PRIVILEGES;
         CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
         CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_USER_PASSWD}';
