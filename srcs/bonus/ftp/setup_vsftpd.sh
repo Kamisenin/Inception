@@ -31,7 +31,7 @@ else
     chown -R "$FTP_USER:$FTP_USER" /var/www/html
 
     echo $FTP_USER >> /etc/vsftpd.userlist
-    touch vsftpd.init
+    touch /etc/vsftpd.init
 fi
 
 log "Starting vsftpd"
