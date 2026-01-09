@@ -34,6 +34,9 @@ RUN apk update \
 
 RUN mv /usr/bin/php84 /usr/bin/php
 
+COPY conf/php.ini /etc/php84/php.ini
+COPY conf/www.conf /etc/php84/php-fpm.d/
+
 WORKDIR /var/www/html
 
 COPY setup_matomo.sh /bin/setup_matomo.sh

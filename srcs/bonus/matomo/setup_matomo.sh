@@ -106,4 +106,4 @@ fi
 
 # Démarrer PHP-FPM sur le port 8081
 log "Starting PHP-FPM on port 8081..."
-exec php-fpm84 -F -R --fpm-config /etc/php84/php-fpm.d/www.conf
+exec php-fpm84 -F
