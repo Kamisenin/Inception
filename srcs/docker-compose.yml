@@ -25,8 +25,11 @@ services:
          condition: service_healthy
       redis:
         condition: service_started
+      matomo:
+        condition: service_started
     volumes:
       - wp-data:/var/www/html
+      - shared-config:/shared
     networks:
       - inception
   
@@ -88,6 +91,22 @@ services:
     networks:
      - inception
 
+  matomo:
+    build: bonus/matomo
+    container_name: matomo
+    restart: on-failure
+    env_file: .env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - matomo-data:/var/www/html
+      - shared-config:/shared
+    networks:
+      - inception
+    ports:
+      - "8081:8081"
+
 networks:
   inception:
     name: inception
@@ -106,3 +125,11 @@ volumes:
        o: bind
        type: none
        device: ${DATA_PATH}/data/wordpress
+  matomo-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${DATA_PATH}/data/matomo
+  shared-config:
+    driver: local
