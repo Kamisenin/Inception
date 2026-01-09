@@ -67,6 +67,34 @@ else
 	wp plugin install redis-cache --activate
 	wp --allow-root plugin update --all
 	wp --allow-root redis enable
+
+	# Configuration de Matomo via wp-piwik
+	log "Waiting for Matomo to be ready..."
+	RETRY_COUNT=0
+	MAX_RETRIES=60
+	while [ ! -f "/shared/matomo-token.txt" ] || [ ! -f "/shared/matomo-siteid.txt" ]; do
+		sleep 2
+		RETRY_COUNT=$((RETRY_COUNT + 1))
+		if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+			log "ERROR: Timeout waiting for Matomo to be ready (waited ${MAX_RETRIES} attempts)"
+			exit 1
+		fi
+	done
+	
+	MATOMO_TOKEN=$(cat /shared/matomo-token.txt)
+	MATOMO_SITE_ID=$(cat /shared/matomo-siteid.txt)
+	
+	log "Installing and configuring wp-piwik plugin..."
+	wp --allow-root plugin install wp-piwik --activate
+	
+	# Configurer wp-piwik
+	wp --allow-root option update wp-piwik_global-piwik_url "http://matomo:8081/" --autoload=yes
+	wp --allow-root option update wp-piwik_global-piwik_token "$MATOMO_TOKEN" --autoload=yes
+	wp --allow-root option update wp-piwik_global-site_id "$MATOMO_SITE_ID" --autoload=yes
+	wp --allow-root option update wp-piwik_global-track_mode "default" --autoload=yes
+	wp --allow-root option update wp-piwik_global-tracking_enabled "1" --autoload=yes
+	
+	log "wp-piwik configured successfully with Matomo!"
 fi
 
 exec php-fpm84 -F

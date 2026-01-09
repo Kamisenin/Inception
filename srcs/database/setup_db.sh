@@ -22,6 +22,9 @@ check_var "DB_ROOT_PASSWD" "$DB_ROOT_PASSWD"
 check_var "DB_NAME" "$DB_NAME"
 check_var "DB_USER" "$DB_USER"
 check_var "DB_USER_PASSWD" "$DB_USER_PASSWD"
+check_var "MATOMO_DB_USER" "$MATOMO_DB_USER"
+check_var "MATOMO_DB_PASSWORD" "$MATOMO_DB_PASSWORD"
+check_var "MATOMO_DB_NAME" "$MATOMO_DB_NAME"
 
 
 if [ -f "/var/lib/mysql/mysql/init_manifesto" ]; then
@@ -36,6 +39,9 @@ else
         CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
         CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_USER_PASSWD}';
         GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
+        CREATE DATABASE IF NOT EXISTS \`${MATOMO_DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+        CREATE USER IF NOT EXISTS '${MATOMO_DB_USER}'@'%' IDENTIFIED BY '${MATOMO_DB_PASSWORD}';
+        GRANT ALL PRIVILEGES ON \`${MATOMO_DB_NAME}\`.* TO '${MATOMO_DB_USER}'@'%';
         CREATE USER 'health'@'%' IDENTIFIED BY 'health';
         FLUSH PRIVILEGES;
 EOF
