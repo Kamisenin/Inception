@@ -70,8 +70,15 @@ else
 
 	# Configuration de Matomo via wp-piwik
 	log "Waiting for Matomo to be ready..."
+	RETRY_COUNT=0
+	MAX_RETRIES=60
 	while [ ! -f "/shared/matomo-token.txt" ] || [ ! -f "/shared/matomo-siteid.txt" ]; do
 		sleep 2
+		RETRY_COUNT=$((RETRY_COUNT + 1))
+		if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+			log "ERROR: Timeout waiting for Matomo to be ready (waited ${MAX_RETRIES} attempts)"
+			exit 1
+		fi
 	done
 	
 	MATOMO_TOKEN=$(cat /shared/matomo-token.txt)

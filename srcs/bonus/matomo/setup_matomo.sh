@@ -81,10 +81,10 @@ else
     
     # Générer le token d'authentification
     log "Generating auth token for WordPress integration..."
-    AUTH_TOKEN=$(php /var/www/html/console user:token-auth "$MATOMO_ADMIN_USER" 2>/dev/null | tail -n1)
+    AUTH_TOKEN=$(php /var/www/html/console user:token-auth "$MATOMO_ADMIN_USER" 2>&1 | tail -n1)
     
-    if [ -z "$AUTH_TOKEN" ]; then
-        log "ERROR: Failed to generate auth token"
+    if [ -z "$AUTH_TOKEN" ] || echo "$AUTH_TOKEN" | grep -qi "error"; then
+        log "ERROR: Failed to generate auth token: $AUTH_TOKEN"
         exit 1
     fi
     
@@ -93,7 +93,13 @@ else
     log "Auth token saved to /shared/matomo-token.txt"
     
     # Obtenir l'ID du site (normalement 1 pour le premier site)
-    SITE_ID=$(php /var/www/html/console site:list --format=json 2>/dev/null | grep -o '"idsite":"[0-9]*"' | head -n1 | grep -o '[0-9]*')
+    SITE_ID=$(php /var/www/html/console site:list --format=json 2>&1 | grep -o '"idsite":"[0-9]*"' | head -n1 | grep -o '[0-9]*')
+    
+    if [ -z "$SITE_ID" ]; then
+        log "WARNING: Failed to extract site ID, using default value 1"
+        SITE_ID="1"
+    fi
+    
     echo "$SITE_ID" > /shared/matomo-siteid.txt
     log "Site ID: $SITE_ID saved to /shared/matomo-siteid.txt"
     
