@@ -22,11 +22,14 @@ services:
     env_file: .env
     depends_on:
       mariadb:
-         condition: service_healthy
+        condition: service_healthy
       redis:
+        condition: service_started
+      umami:
         condition: service_started
     volumes:
       - wp-data:/var/www/html
+      - shared-config:/shared
     networks:
       - inception
   
@@ -43,6 +46,7 @@ services:
       - adminer
     volumes:
       - wp-data:/var/www/html
+      - umami-data:/var/www/umami
   
   # ------ bonus ------
 
@@ -88,9 +92,44 @@ services:
     networks:
      - inception
 
+  postgre_sql:
+    build: bonus/umami/postgre_sql
+    container_name: postgre_sql
+    restart: on-failure
+    env_file: .env
+    volumes:
+      - postgre-data:/var/lib/postgresql/data
+    networks:
+      - umami
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $UMAMI_USER -d $UMAMI_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    
+
+  umami:
+    build: bonus/umami/umami
+    container_name: umami
+    restart: on-failure
+    env_file: .env
+    depends_on:
+      postgre_sql:
+        condition: service_healthy
+    volumes:
+      - umami-data:/var/www/umami
+      - shared-config:/shared
+    networks:
+      - inception
+      - umami
+
 networks:
   inception:
     name: inception
+    driver: bridge
+  umami:
+    name: umami
     driver: bridge
 
 volumes:
@@ -100,9 +139,26 @@ volumes:
        o: bind
        type: none
        device: ${DATA_PATH}/data/db
+  postgre-data :
+    driver: local
+    driver_opts:
+       o: bind
+       type: none
+       device: ${DATA_PATH}/data/postgre
+
   wp-data:
     driver: local
     driver_opts:
        o: bind
        type: none
        device: ${DATA_PATH}/data/wordpress
+
+  umami-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${DATA_PATH}/data/umami
+  
+  shared-config:
+    driver: local

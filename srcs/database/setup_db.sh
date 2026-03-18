@@ -19,9 +19,10 @@ check_var() {
 }
 
 check_var "DB_ROOT_PASSWD" "$DB_ROOT_PASSWD"
-check_var "DB_NAME" "$DB_NAME"
-check_var "DB_USER" "$DB_USER"
-check_var "DB_USER_PASSWD" "$DB_USER_PASSWD"
+
+check_var "DB_NAME" "$WP_DB_NAME"
+check_var "DB_USER" "$WP_DB_USER"
+check_var "DB_USER_PASSWD" "$WP_DB_USER_PASSWD"
 
 
 if [ -f "/var/lib/mysql/mysql/init_manifesto" ]; then
@@ -33,10 +34,13 @@ else
         FLUSH PRIVILEGES;
         ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWD';
         FLUSH PRIVILEGES;
-        CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-        CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_USER_PASSWD}';
-        GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
+        
+        CREATE DATABASE IF NOT EXISTS \`${WP_DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        CREATE USER IF NOT EXISTS '${WP_DB_USER}'@'%' IDENTIFIED BY '${WP_DB_USER_PASSWD}';
+        GRANT ALL PRIVILEGES ON \`${WP_DB_NAME}\`.* TO '${WP_DB_USER}'@'%';
+        
         CREATE USER 'health'@'%' IDENTIFIED BY 'health';
+        
         FLUSH PRIVILEGES;
 EOF
     log "Initialization done..."
