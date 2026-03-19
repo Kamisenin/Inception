@@ -20,6 +20,9 @@ check_var "UMAMI_USER" "$UMAMI_USER"
 check_var "UMAMI_USER_PASSWD" "$UMAMI_USER_PASSWD"
 check_var "UMAMI_DB" "$UMAMI_DB"
 
+mkdir -p "$PGDATA" /run/postgresql
+chown -R postgres:postgres "$PGDATA" /run/postgresql
+
 if [ ! -f "$PGDATA/PG_VERSION" ]; then
     su-exec postgres initdb -D "$PGDATA"
     su-exec postgres pg_ctl -D "$PGDATA" start
@@ -40,4 +43,4 @@ else
 fi
 
 log "Starting Postgresql server..."
-exec "exec su-exec postgres postgres -D \"$PGDATA\""
+exec "$@"

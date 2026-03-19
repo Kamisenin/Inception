@@ -9,12 +9,10 @@ RUN apk update \
 
 ENV PGDATA="/var/lib/postgresql/data"
 
-RUN mkdir -p "$PGDATA"/run/postgresql \
-    && chown -R postgres:postgres "$PGDATA"/run/postgresql
-
 COPY "entrypoint.sh" "/bin/entrypoint.sh"
 RUN chmod +x "/bin/entrypoint.sh"
 
 EXPOSE 5432
 
 ENTRYPOINT ["/bin/entrypoint.sh"]
+CMD ["su-exec", "postgres", "postgres", "-D", "/var/lib/postgresql/data"]
