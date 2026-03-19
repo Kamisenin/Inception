@@ -22,13 +22,15 @@ check_var "UMAMI_DB" "$UMAMI_DB"
 
 export DATABASE_URL="postgresql://$UMAMI_USER:$UMAMI_USER_PASSWD@postgre_sql/$UMAMI_DB"
 
-if [! -f "/bin/umami/init_manifesto" ]; then
+if [ ! -f "/bin/umami/init_manifesto" ]; then
     log "Initializing umami build"
 
+    pnpm exec prisma generate
     pnpm next build
     touch "/bin/umami/init_manifesto"
 else
-    log 
+    log "Already initialized, skipping build..."
 fi
 
-exec "pnpm next start -p 8081"
+log "Starting umami..."
+exec "$@"

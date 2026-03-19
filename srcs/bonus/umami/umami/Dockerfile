@@ -19,4 +19,6 @@ EXPOSE 8081
 COPY "setup_umami.sh" "/bin/setup_umami.sh"
 RUN chmod +x "/bin/setup_umami.sh"
 
-CMD ["/bin/setup_umami.sh"]
+ENTRYPOINT ["/bin/setup_umami.sh"]
+
+CMD ["pnpm", "next", "start", "-p", "8081"]
