@@ -1,0 +1,19 @@
+server:
+  port: 8081
+  proxied : true
+  base-url: /glance
+
+pages :
+  - name: Home
+    hide-desktop-navigation: true
+    columns:
+      - size: full
+        widgets:
+          - type: docker-containers
+            hide-by-default: false
+      - size: small
+        widgets:
+          - type: weather
+            location: Angoulême, France
+            units: metric
+            hour-format: 24h

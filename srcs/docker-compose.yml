@@ -14,6 +14,9 @@ services:
       timeout: 3s
       retries: 10
       start_period: 10s
+    labels:
+      glance.parent: wp
+      glance.name: Database
 
   wordpress:
     build: wordpress
@@ -25,13 +28,17 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-      umami:
-        condition: service_started
     volumes:
       - wp-data:/var/www/html
       - shared-config:/shared
     networks:
       - inception
+    labels:
+      glance.name: wordpress
+      glance.icon: si:wordpress
+      glance.url: https://csenelle.42.fr
+      glance.description: Wordpress Site
+      glance.id: wp
   
   nginx:
     build: nginx
@@ -46,7 +53,11 @@ services:
       - adminer
     volumes:
       - wp-data:/var/www/html
-      - umami-data:/var/www/umami
+    labels:
+      glance.name: Nginx
+      glance.icon: si:nginx
+      glance.description: Nginx server
+      glance.id: nginx
   
   # ------ bonus ------
 
@@ -59,6 +70,9 @@ services:
       - "6379:6379"
     networks:
       - inception
+    labels:
+      glance.name: Redis
+      glance.parent: wp
   
   adminer:
     build: bonus/adminer
@@ -71,6 +85,12 @@ services:
          condition: service_healthy
     networks:
       - inception
+    labels:
+      glance.name: Adminer
+      glance.icon: si:adminer
+      glance.url: https://csenelle.42.fr/adminer
+      glance.description: Administration service
+      glance.id: adminer
     
   ftp:
     build: bonus/ftp
@@ -84,6 +104,11 @@ services:
       - "21210-21220:21210-21220"
     networks:
      - inception
+    labels:
+      glance.name: Vsftp
+      glance.icon: si:filezilla
+      glance.description: Vsftp server
+      glance.id: vsftp
 
   static_page:
     build: bonus/static_page
@@ -91,38 +116,26 @@ services:
     restart: on-failure
     networks:
      - inception
+    labels:
+      glance.name: Welcome Page
+      glance.icon: si:wikipedia
+      glance.url:  https://csenelle.42.fr/welcome
+      glance.description: A simple static page
+      glance.id: static
 
-  postgre_sql:
-    build: bonus/umami/postgre_sql
-    container_name: postgre_sql
+  glance:
+    container_name: glance
+    build : bonus/glance
     restart: on-failure
-    env_file: .env
-    volumes:
-      - postgre-data:/var/lib/postgresql/data
-    networks:
-      - umami
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $UMAMI_USER -d $UMAMI_DB"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-      start_period: 10s
-    
-
-  umami:
-    build: bonus/umami/umami
-    container_name: umami
-    restart: on-failure
-    env_file: .env
-    depends_on:
-      postgre_sql:
-        condition: service_healthy
-    volumes:
-      - umami-data:/var/www/umami
-      - shared-config:/shared
+    volumes :
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - inception
-      - umami
+    ports :
+      - "8081:8081"
+    labels:
+      glance.icon: si:glance
+      glance.description: A dashboard manager
 
 networks:
   inception:
@@ -139,12 +152,6 @@ volumes:
        o: bind
        type: none
        device: ${DATA_PATH}/data/db
-  postgre-data :
-    driver: local
-    driver_opts:
-       o: bind
-       type: none
-       device: ${DATA_PATH}/data/postgre
 
   wp-data:
     driver: local
@@ -152,13 +159,6 @@ volumes:
        o: bind
        type: none
        device: ${DATA_PATH}/data/wordpress
-
-  umami-data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${DATA_PATH}/data/umami
   
   shared-config:
     driver: local
