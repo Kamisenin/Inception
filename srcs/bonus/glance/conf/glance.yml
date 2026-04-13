@@ -3,6 +3,11 @@ server:
   proxied : true
   base-url: /glance
 
+auth :
+  secret-key: ${SECRET_KEY}
+  users:
+    ${GLANCE_ADMIN}:
+      password : ${GLANCE_PASSWD}
 pages :
   - name: Home
     hide-desktop-navigation: true

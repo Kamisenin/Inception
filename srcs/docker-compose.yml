@@ -133,6 +133,7 @@ services:
       - inception
     ports :
       - "8081:8081"
+    env_file : .env
     labels:
       glance.icon: si:glance
       glance.description: A dashboard manager
