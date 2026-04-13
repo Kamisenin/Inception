@@ -34,7 +34,7 @@ services:
     networks:
       - inception
     labels:
-      glance.name: wordpress
+      glance.name: Wordpress
       glance.icon: si:wordpress
       glance.url: https://csenelle.42.fr
       glance.description: Wordpress Site
@@ -136,6 +136,7 @@ services:
     labels:
       glance.icon: si:glance
       glance.description: A dashboard manager
+      glance.name: Glance
 
 networks:
   inception:
