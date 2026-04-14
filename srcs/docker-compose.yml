@@ -1,6 +1,6 @@
 services:
   mariadb:
-    build: database
+    build: requirements/database
     container_name: mariadb
     restart: on-failure
     env_file: .env
@@ -19,7 +19,7 @@ services:
       glance.name: Database
 
   wordpress:
-    build: wordpress
+    build: requirements/wordpress
     container_name: wordpress
     restart: on-failure
     env_file: .env
@@ -41,7 +41,7 @@ services:
       glance.id: wp
   
   nginx:
-    build: nginx
+    build: requirements/nginx
     container_name: nginx
     restart: on-failure
     ports:
