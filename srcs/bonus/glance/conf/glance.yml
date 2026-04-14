@@ -12,13 +12,35 @@ pages :
   - name: Home
     hide-desktop-navigation: true
     columns:
+      - size: small
+        widgets:
+          - type: calendar
+            first-day-of-week: monday
+
       - size: full
         widgets:
           - type: docker-containers
             hide-by-default: false
+
       - size: small
         widgets:
           - type: weather
             location: Angoulême, France
             units: metric
             hour-format: 24h
+          
+          - type: markets
+            markets:
+              - symbol: AMD
+                name: AMD
+              - symbol: NVDA
+                name: NVIDIA
+              - symbol: AAPL
+                name: Apple
+              - symbol: MSFT
+                name: Microsoft
+
+          - type: releases
+            cache: 1d
+            repositories:
+              - PapillonApp/Papillon
