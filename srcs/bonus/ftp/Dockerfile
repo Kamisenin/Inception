@@ -4,11 +4,11 @@ RUN apk add vsftpd
 
 COPY conf/vsftpd.conf /etc/vsftpd.conf
 
-COPY setup_vsftpd.sh /bin/setup_vsftpd.sh
-RUN chmod +x /bin/setup_vsftpd.sh
+COPY entrypoint.sh /bin/entrypoint.sh
+RUN chmod +x /bin/entrypoint.sh
 
 EXPOSE 21
 
 EXPOSE 21210-21220
 
-ENTRYPOINT ["/bin/setup_vsftpd.sh"]
+ENTRYPOINT ["/bin/entrypoint.sh"]
