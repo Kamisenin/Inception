@@ -109,7 +109,8 @@ All commands must be run from the **repository root** (where the `Makefile` is l
 | `up` | `make up` | Starts all services in the foreground using the existing images. Does not rebuild. Container logs are printed directly to the terminal. Press `Ctrl+C` to stop. |
 | `down` | `make down` | Stops and removes all running containers. Images and volumes remain on disk, making the next `make up` fast. |
 | `clean` | `make clean` | Calls `make down`, then runs `docker system prune -af` to remove all unused images, stopped containers and dangling networks. Volumes are **not** deleted. |
-| `fclean` | `make fclean` | Stops all containers, removes volumes and orphans (`docker compose down -v --remove-orphans`), prunes the entire Docker system including volumes, and **deletes the host data directories** at `${DATA_PATH}/data` with `sudo rm -rf`. This is destructive and irreversible. |
+| `fclean` | `make fclean` | Stops all containers, removes volumes and orphans (`docker compose down -v --remove-orphans`), prunes the entire Docker system including volumes. This is **irreversible** |
+| `sfclean` | `make sfclean` | Does the same as fclean but also **deletes the host data directories** at `${DATA_PATH}/data` with `sudo rm -rf`. Need **sudo access** to be used. This is destructive and irreversible !! *use this as a last resort*|
 | `re` | `make re` | Runs `make clean` followed by `make setup`. Equivalent to a full teardown and rebuild. |
 
 All targets are declared `.PHONY` so they always execute regardless of filesystem state.
@@ -204,7 +205,8 @@ To change the storage location, update `DATA_PATH` in `srcs/.env` before running
 
 - **Containers are ephemeral.** Running `make down` and `make up` destroys and recreates containers, but the data in the volumes remains untouched.
 - **`make clean`** removes images but preserves volumes. Data survives.
-- **`make fclean`** removes everything — volumes, images and the host data directories. All data is permanently deleted.
+- **`make fclean`** removes everything. Volumes, images. All data is permanently deleted.
+- **`make sfclean`** if for some reason fclean did not clear the volumes correctly, it will delete the host data directories. Again, all data is permanently deleted.
 
 ---
 
@@ -213,33 +215,33 @@ To change the storage location, update `DATA_PATH` in `srcs/.env` before running
 The following diagram summarises how containers relate to each other:
 
 ```
-                    ┌───────────────────────────────────┐
-                    │           Host Machine             │
-                    │                                   │
+                   ┌───────────────────────────────────┐
+                   │           Host Machine            │
+                   │                                   │
   Port 443 ──────▶ │   ┌───────────┐                   │
-                    │   │   Nginx   │ (reverse proxy)   │
-                    │   └─────┬─────┘                   │
-                    │         │                         │
+                   │   │   Nginx   │ (reverse proxy)   │
+                   │   └─────┬─────┘                   │
+                   │         │                         │
           ┌────────┼─────────┼────────────┐            │
           │        │         │            │            │
           ▼        │         ▼            ▼            │
-   ┌───────────┐   │  ┌───────────┐ ┌──────────┐      │
-   │  Adminer  │   │  │ WordPress │ │  Static  │      │
-   │ /adminer/ │   │  │     /     │ │ /welcome/│      │
-   └─────┬─────┘   │  └─────┬─────┘ └──────────┘      │
+   ┌───────────┐   │  ┌───────────┐ ┌──────────┐       │
+   │  Adminer  │   │  │ WordPress │ │  Static  │       │
+   │ /adminer/ │   │  │     /     │ │ /welcome/│       │
+   └─────┬─────┘   │  └─────┬─────┘ └──────────┘       │
          │         │        │                          │
          │         │   ┌────┴────┐                     │
          │         │   │         │                     │
          ▼         │   ▼         ▼                     │
-   ┌───────────┐   │         ┌───────┐                │
-   │  MariaDB  │◀──┼─────── │ Redis │                │
-   │  (db-data)│   │         └───────┘                │
+   ┌───────────┐   │         ┌───────┐                 │
+   │  MariaDB  │◀──┼───────  │ Redis │                 │
+   │  (db-data)│   │         └───────┘                 │
    └───────────┘   │                                   │
-                    │   ┌───────┐    ┌───────┐          │
-                    │   │  FTP  │    │ Glance│          │
-                    │   │  :21  │    │/glance/│         │
-                    │   └───────┘    └───────┘          │
-                    └───────────────────────────────────┘
+                   │   ┌───────┐    ┌────────┐         │
+                   │   │  FTP  │    │ Glance │         │
+                   │   │  :21  │    │/glance/│         │
+                   │   └───────┘    └────────┘         │
+                   └───────────────────────────────────┘
 ```
 
 All containers are connected to the `inception` bridge network. Only Nginx exposes port 443 to the host. Glance accesses the Docker daemon via the mounted `/var/run/docker.sock` socket to read container states.
