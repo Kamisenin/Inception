@@ -40,7 +40,10 @@ When we want to set a Password to the application of our docker image, one of th
 
 Docker Secrets on the other hand are encrypted at rest and in transit. They are only available to the services that have been granted access to them and are mounted as files inside the container at `/run/secrets/<secret_name>`. This makes them a lot more secure than environment variables as they are not exposed in the container's environment and cannot be seen with a simple inspect command.
 
-In this project, we use Docker Secrets for sensitive data like database passwords and root passwords while keeping non-sensitive configuration like domain names or database names as environment variables.
+Secrets are generaly used in Production for the final product while env is used for Development because they are pretty annoying to sustain as you have to create a file per secret and can't really group them in one file. It could be possible to group them but its not really the expected use of it. <br />
+So if you have a lot of different variables it can be more interesting to use env_file, especially if it is online only and people as if it setup well people should not have access to your docker internally and it wouldn't really be possible to use them. 
+
+In this project, I decided to not use docker secrets, because I wanted it the most customizable possible and added lots of environnment variable, that would just be annoying for everyone to create a file per variable and for me to document. It is a lot easier to setup and comprehend if everything is in one file, since the docker is here to setup a Website, clients would anyways not be able to access the docker containers and for the devs its just simpler to maintain. 
 
 ###### Docker Network vs Host Network
 
@@ -75,17 +78,20 @@ II. It is also one of the most used linux distribution when hosting servers and 
 
 ## Instructions
 
-Here is a brief explanation of the available commands to manage the infrastructure. All commands are run from the root of the project using `make`.
+Here is a brief explanation of the available commands to manage the infrastructure and how to setup the project. For more extensive explanation go to the [DEV_DOC.md](https://github.com/Kamisenin/Inception/DEV_DOC.md) file given with this project
 
-| Command | Description |
-|---------|-------------|
-| `make setup` | Runs the setup script and builds then starts all containers in detached mode. This is the command to use when you want to get everything up and running for the first time. |
-| `make build` | Runs the setup script and builds all the Docker images without starting the containers. Useful when you want to compile the images and check for build errors. |
-| `make up` | Starts all the containers defined in the docker-compose file. Use this when the images are already built and you just want to bring the infrastructure up. |
-| `make down` | Stops and removes all running containers. The volumes and images are kept intact so you can bring everything back up quickly. |
-| `make clean` | Stops all containers and prunes the entire Docker system removing all unused images, containers and networks. |
-| `make fclean` | The nuclear option. Stops all containers, removes volumes, orphan containers, prunes everything including volumes and deletes the persistent data directories. Use this when you want a completely fresh start. |
-| `make re` | Runs `clean` followed by `setup`. A quick way to rebuild everything from scratch. |
+To setup the project you first need to customize the passwords, mail, path etc using the [env_example](https://github.com/Kamisenin/Inception/srcs/env_example) given with the project and rename it into a ".env" file.
+The second thing that needs to be done is setting up the host name of your custom address, it can be done by accessing the /etc/hosts file using this command :
+```bash
+> sudo nano /etc/hosts
+```
+**Note :** You need to have sudo access <br />
+
+It will give you something like that, you just need to add an IP adress similar to what i put, do not change the first 3 letters but you can do what you want with the rest. And then write the domain name of your choice that you have put inside the env_example. This will act as your domain name, save the file and done ! <br />
+<img width="739" height="484" alt="image" src="https://github.com/user-attachments/assets/fae18814-6568-4bfb-9c2d-b5879c5832d6" />
+<br />
+
+You can now build and start the project using the rule `make` or `make setup` at the root repository of the project. To stop you can either down the containers using `make down` or clear completely form your disk using `make fclean` or `make sfclean` (needs sudo and I do not recommended to use it if you don't know what you are doing). The rest of the commands can be found In the [USER_DOC.md](https://github.com/Kamisenin/Inception/USER_DOC.md) file or [DEV_DOC.md](https://github.com/Kamisenin/Inception/DEV_DOC.md).
 
 ## Resources
 
@@ -93,4 +99,4 @@ Here is a brief explanation of the available commands to manage the infrastructu
 - [Docker Documentation](https://docs.docker.com/)
 - [WordPress CLI Documentation](https://developer.wordpress.org/cli/commands/)
 - [Glance GitHub](https://github.com/glanceapp/glance)
-- [Stéphane Music's Inception](https://music-music.music42.fr/music/inception) <!-- TODO: Replace with the correct URL -->
+- [Stéphane Vogrig's Inception](https://github.com/StephaneVogrig/23_Inception), which was very instructive and useful to compare to mine, I reused some of his code and norm, like the log function or check env_var or the entrypoint.sh naming (before it was setup_{name of service} I prefer like it is now)
