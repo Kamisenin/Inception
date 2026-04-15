@@ -100,3 +100,5 @@ You can now build and start the project using the rule `make` or `make setup` at
 - [WordPress CLI Documentation](https://developer.wordpress.org/cli/commands/)
 - [Glance GitHub](https://github.com/glanceapp/glance)
 - [Stephane Vogrig's Inception](https://github.com/StephaneVogrig/23_Inception), which was very instructive and useful to compare to mine, I reused some of his code and norm, like the log function or check env_var or the entrypoint.sh naming (before it was setup_{name of service} I prefer like it is now)
+<br />
+> ***Ai usage**: AI tools were used strictly for documentation purposes (Nginx) and assisting in writing the readme documentation for the project.*
