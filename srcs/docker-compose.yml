@@ -143,9 +143,6 @@ networks:
   inception:
     name: inception
     driver: bridge
-  umami:
-    name: umami
-    driver: bridge
 
 volumes:
   db-data :
