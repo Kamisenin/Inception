@@ -78,7 +78,7 @@ II. It is also one of the most used linux distribution when hosting servers and 
 
 ## Instructions
 
-Here is a brief explanation of the available commands to manage the infrastructure and how to setup the project. For more extensive explanation go to the [DEV_DOC.md](https://github.com/Kamisenin/Inception/DEV_DOC.md) file given with this project
+Here is a brief explanation of the available commands to manage the infrastructure and how to setup the project. For more extensive explanation go to the [DEV_DOC.md](https://github.com/Kamisenin/Inception/blob/main/DEV_DOC.md) file given with this project
 
 To setup the project you first need to customize the passwords, mail, path etc using the [env_example](https://github.com/Kamisenin/Inception/srcs/env_example) given with the project and rename it into a ".env" file.
 The second thing that needs to be done is setting up the host name of your custom address, it can be done by accessing the /etc/hosts file using this command :
@@ -91,7 +91,7 @@ It will give you something like that, you just need to add an IP adress similar 
 <img width="739" height="484" alt="image" src="https://github.com/user-attachments/assets/fae18814-6568-4bfb-9c2d-b5879c5832d6" />
 <br />
 
-You can now build and start the project using the rule `make` or `make setup` at the root repository of the project. To stop you can either down the containers using `make down` or clear completely form your disk using `make fclean` or `make sfclean` (needs sudo and I do not recommended to use it if you don't know what you are doing). The rest of the commands can be found In the [USER_DOC.md](https://github.com/Kamisenin/Inception/USER_DOC.md) file or [DEV_DOC.md](https://github.com/Kamisenin/Inception/DEV_DOC.md).
+You can now build and start the project using the rule `make` or `make setup` at the root repository of the project. To stop you can either down the containers using `make down` or clear completely form your disk using `make fclean` or `make sfclean` (needs sudo and I do not recommended to use it if you don't know what you are doing). The rest of the commands can be found In the [USER_DOC.md](https://github.com/Kamisenin/Inception/blob/main/USER_DOC.md) file or [DEV_DOC.md](https://github.com/Kamisenin/Inception/blob/main/DEV_DOC.md).
 
 ## Resources
 
