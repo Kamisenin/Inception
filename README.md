@@ -80,7 +80,7 @@ II. It is also one of the most used linux distribution when hosting servers and 
 
 Here is a brief explanation of the available commands to manage the infrastructure and how to setup the project. For more extensive explanation go to the [DEV_DOC.md](https://github.com/Kamisenin/Inception/blob/main/DEV_DOC.md) file given with this project
 
-To setup the project you first need to customize the passwords, mail, path etc using the [env_example](https://github.com/Kamisenin/Inception/srcs/env_example) given with the project and rename it into a ".env" file.
+To setup the project you first need to customize the passwords, mail, path etc using the [env_example](https://github.com/Kamisenin/Inception/blob/main/srcs/env_example) given with the project and rename it into a ".env" file.
 The second thing that needs to be done is setting up the host name of your custom address, it can be done by accessing the /etc/hosts file using this command :
 ```bash
 > sudo nano /etc/hosts
@@ -99,4 +99,4 @@ You can now build and start the project using the rule `make` or `make setup` at
 - [Docker Documentation](https://docs.docker.com/)
 - [WordPress CLI Documentation](https://developer.wordpress.org/cli/commands/)
 - [Glance GitHub](https://github.com/glanceapp/glance)
-- [Stéphane Vogrig's Inception](https://github.com/StephaneVogrig/23_Inception), which was very instructive and useful to compare to mine, I reused some of his code and norm, like the log function or check env_var or the entrypoint.sh naming (before it was setup_{name of service} I prefer like it is now)
+- [Stephane Vogrig's Inception](https://github.com/StephaneVogrig/23_Inception), which was very instructive and useful to compare to mine, I reused some of his code and norm, like the log function or check env_var or the entrypoint.sh naming (before it was setup_{name of service} I prefer like it is now)
