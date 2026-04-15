@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by (csenelle)[https://github.com/Kamisenin]*
+*This project has been created as part of the 42 curriculum by [csenelle](https://github.com/Kamisenin)*
 
 # Inception
 
@@ -17,15 +17,20 @@
 
 ##### Docker
 
-«*What's Docker ?*» One might say. <br/>
-  
-«*Docker is a platform designed to help developers build, share, and run container applications.*» - (*Docker site*)[https://www.docker.com/]. Personnally I like to view it as a software that let you create multiple of little computer inside your own computer.  
+###### «*What's Docker ?*» One might say. <br/>
 
-Its very useful when you want to run the same operating system or application inside multiple different computer as it allows you to have the same system in every computer you create. It is basically the best option to allow anyone to run your application inside a controlled space.  
+«*Docker is a platform designed to help developers build, share, and run container applications.*» - [*Docker site*](https://www.docker.com/). Personnally I like to view it as a software that let you create multiple of little computer inside your own computer to run an application.  
 
-The other very useful thing Docker can do is allow you to create an entire server infrastructure inside a server. This project is one of the best example of such option, as it is a replication of a Website and its utilities. 
+Its very useful when you want to run the same operating system or application inside multiple different computer as it allows you to have the same system in every computer you create. It is basically the best option to allow anyone to run your application inside a controlled space.
 
-One thing I want to clarify with docker and that some people 
+The other very useful thing Docker can do is allow you to create an entire server infrastructure inside a server. This project is one of the best example of such posibility, as it is a replication of a Website and its utilities. 
+
+Like said earlier, Docker's main purpose is to run applications inside a controlled environnment with little disk and power usage. Which is very different than VMs where the main purpose is to run an entire operating system and act as a computer inside another.
+
+###### Secrets
+
+One really interesting feature of Docker is Docket Secrets.  
+When we want to set a Password to the application of our docker image, one of the most easy and used way to set a Dynamic password is to use environment variables. All you have to do is have a .env file and
 
 ##### Alpine
 
@@ -35,5 +40,5 @@ I. Alpine is the fastest and most light Linux distribution of the two, which mak
 II. It is also one of the most used linux distribution when hosting servers and website, which may have to do with the first reason but i figured it is itself a good reason to use it when pretty much every one else uses it.  
 
 
-### Personal note
+#### Personal note
 > The last bonus part requires you to add a service of your choice and justify its choice in the whole in perspective of the rest of the infrastructure. At first I wanted to add a self hosted Analytics service like Umami or Matomo but the latter did not have any CLI support at the time and I didn't have enough space in the school's VM to build Umami. So I went with another self hosted service I liked : Glance. it is a very simple, ✨ *stylish* ✨ and easy to use dashboard manager. I found it particularly interesting as it proposed a very unique docker management option that let you see the state of your dockers without having to go through docker ps inside the server while still be secured with a password. Which is a quite useful thing to have in a docker infrastructure where we would imagine it to be online, as you are not always able to directly access your dockers and see their current state.   

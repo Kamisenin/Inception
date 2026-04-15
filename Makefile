@@ -3,9 +3,16 @@ export DATA_PATH
 
 DOCKER_COMPOSE = docker compose -f srcs/docker-compose.yml
 
-up: 
+setup:
 	./setup.sh
 	$(DOCKER_COMPOSE) up -d --build
+
+build:
+	./setup.sh
+	$(DOCKER_COMPOSE) build
+
+up: 
+	$(DOCKER_COMPOSE) up
 
 down: 
 	$(DOCKER_COMPOSE) down
@@ -19,6 +26,6 @@ fclean:
 	docker volume prune -af
 	sudo rm -rf $(DATA_PATH)/data
 
-re: down clean up
+re: clean setup
 
 .PHONY : up down re clean fclean
