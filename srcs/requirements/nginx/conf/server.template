@@ -1,0 +1,45 @@
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name ${DOMAIN_NAME};
+
+    ssl_certificate     /etc/nginx/ssl/wordpress.crt;
+	ssl_certificate_key /etc/nginx/ssl/wordpress.key;
+	ssl_protocols TLSv1.2 TLSv1.3;
+
+    root /var/www/html;
+    index index.php index.html index.htm;
+
+    location /glance/ {
+        proxy_pass http://glance:8081/;
+        proxy_set_header Host ${DOLLAR}host;
+        proxy_set_header X-Real-IP ${DOLLAR}remote_addr;
+        proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto ${DOLLAR}scheme;
+    }
+
+    location /welcome/ {
+        proxy_pass http://static_page:1818/;
+        proxy_set_header Host ${DOLLAR}host;
+        proxy_set_header X-Real-IP ${DOLLAR}remote_addr;
+        proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto ${DOLLAR}scheme;
+    }
+
+    location /adminer/ {
+        proxy_pass http://adminer:8080/;
+        proxy_set_header Host ${DOLLAR}host;
+        proxy_set_header X-Real-IP ${DOLLAR}remote_addr;
+        proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto ${DOLLAR}scheme;
+    }
+
+    location ~ \.php${DOLLAR} {
+        try_files ${DOLLAR}uri =404;
+        include fastcgi_params;
+		fastcgi_param PATH_INFO ${DOLLAR}fastcgi_path_info;
+        fastcgi_pass wordpress:9000;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME /var/www/html${DOLLAR}fastcgi_script_name;
+    }
+}

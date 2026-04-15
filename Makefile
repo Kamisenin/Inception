@@ -1,5 +1,6 @@
 include srcs/.env
 export DATA_PATH
+export DOMAIN_NAME
 
 DOCKER_COMPOSE = docker compose -f srcs/docker-compose.yml
 
@@ -24,6 +25,8 @@ fclean:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	docker system prune -af --volumes
 	docker volume prune -af
+
+sfclean : fclean
 	sudo rm -rf $(DATA_PATH)/data
 
 re: clean setup

@@ -36,7 +36,7 @@ services:
     labels:
       glance.name: Wordpress
       glance.icon: si:wordpress
-      glance.url: https://csenelle.42.fr
+      glance.url: https://${DOMAIN_NAME}
       glance.description: Wordpress Site
       glance.id: wp
   
@@ -44,6 +44,7 @@ services:
     build: requirements/nginx
     container_name: nginx
     restart: on-failure
+    env_file : .env
     ports:
       - "443:443"
     networks:
@@ -88,7 +89,7 @@ services:
     labels:
       glance.name: Adminer
       glance.icon: si:adminer
-      glance.url: https://csenelle.42.fr/adminer
+      glance.url: https://${DOMAIN_NAME}/adminer
       glance.description: Administration service
       glance.id: adminer
     
@@ -119,7 +120,7 @@ services:
     labels:
       glance.name: Welcome Page
       glance.icon: si:wikipedia
-      glance.url:  https://csenelle.42.fr/welcome
+      glance.url:  https://${DOMAIN_NAME}/welcome
       glance.description: A simple static page
       glance.id: static
 

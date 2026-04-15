@@ -6,9 +6,15 @@ RUN apk update \
 		nginx \
 		curl \
 		openssl \
+		envsubst \
     && rm -rf /var/cache/apk/*
 
-COPY conf/server.conf /etc/nginx/http.d
+COPY conf/server.template /bin/server.template
+
+COPY entrypoint.sh /bin/entrypoint.sh
+
+RUN chmod 777 /bin/entrypoint.sh \
+	&& chmod 777 /bin/server.template
 
 RUN mkdir -p /etc/nginx/ssl/ \
 	&& apk add openssl \
@@ -17,8 +23,9 @@ RUN mkdir -p /etc/nginx/ssl/ \
 		-nodes \
 		-out /etc/nginx/ssl/wordpress.crt \
 		-keyout /etc/nginx/ssl/wordpress.key \
-		-subj "/C=FR/ST=NA/L=Angouleme/O=42/OU=42/CN=csenelle.42.fr/UID=csenelle"
+		-subj "/C=FR/ST=NA/L=Angouleme/O=42/OU=42/CN=${DOMAIN_NAME}/UID=csenelle"
 
 EXPOSE 443
 
+ENTRYPOINT ["/bin/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
