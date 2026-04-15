@@ -90,7 +90,7 @@ The Nginx reverse proxy listens on port 443 and expects a specific `server_name`
    127.0.42.1    csenelle.42.fr
    ```
 
-   The first three octets should remain unchanged from your existing loopback configuration; the last octet can be set freely. The domain must match the `server_name` in the Nginx configuration.
+   Any address in the `127.0.0.0/8` loopback range works (e.g. `127.0.0.1`, `127.0.42.1`). The domain must match the `server_name` in the Nginx configuration (`srcs/requirements/nginx/conf/server.conf`).
 
 3. Save and close the file. The domain now resolves locally.
 
@@ -104,7 +104,7 @@ All commands must be run from the **repository root** (where the `Makefile` is l
 
 | Target | Command | Description |
 |--------|---------|-------------|
-| `setup` | `make setup` | Runs `setup.sh` to create the required host directories (`${DATA_PATH}/data/db`, `${DATA_PATH}/data/wordpress`, etc.), then builds all Docker images and starts every container in detached mode (`docker compose up -d --build`). This is the standard first-run command. |
+| `setup` | `make setup` | Runs `setup.sh` to create the required host directories (`${DATA_PATH}/data/db` and `${DATA_PATH}/data/wordpress`), then builds all Docker images and starts every container in detached mode (`docker compose up -d --build`). This is the standard first-run command. |
 | `build` | `make build` | Runs `setup.sh` and builds all images without starting containers. Useful when you only want to verify that all Dockerfiles compile correctly. |
 | `up` | `make up` | Starts all services in the foreground using the existing images. Does not rebuild. Container logs are printed directly to the terminal. Press `Ctrl+C` to stop. |
 | `down` | `make down` | Stops and removes all running containers. Images and volumes remain on disk, making the next `make up` fast. |
@@ -231,9 +231,9 @@ The following diagram summarises how containers relate to each other:
          │         │   ┌────┴────┐                     │
          │         │   │         │                     │
          ▼         │   ▼         ▼                     │
-   ┌───────────┐   │ ┌─────┐ ┌───────┐                │
-   │  MariaDB  │◀──┼─┤     │ │ Redis │                │
-   │  (db-data)│   │ └─────┘ └───────┘                │
+   ┌───────────┐   │         ┌───────┐                │
+   │  MariaDB  │◀──┼─────── │ Redis │                │
+   │  (db-data)│   │         └───────┘                │
    └───────────┘   │                                   │
                     │   ┌───────┐    ┌───────┐          │
                     │   │  FTP  │    │ Glance│          │
