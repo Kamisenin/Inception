@@ -3,7 +3,13 @@
 # Inception
 
 ## Table of Contents
-    - (Description)[#description]
+- [Description](#description)
+  - [Overview](#overview)
+  - [Project Description](#project-description)
+    - [In Depth Explanation](#in-depth-explanation)
+    - [Personal note](#personal-note)
+- [Instructions](#instructions)
+- [Resources](#resources)
 
 ## Description
 
@@ -27,10 +33,37 @@ The other very useful thing Docker can do is allow you to create an entire serve
 
 Like said earlier, Docker's main purpose is to run applications inside a controlled environnment with little disk and power usage. Which is very different than VMs where the main purpose is to run an entire operating system and act as a computer inside another.
 
-###### Secrets
+###### Secrets vs Environment Variables
 
-One really interesting feature of Docker is Docket Secrets.  
-When we want to set a Password to the application of our docker image, one of the most easy and used way to set a Dynamic password is to use environment variables. All you have to do is have a .env file and
+One really interesting feature of Docker is Docker Secrets.  
+When we want to set a Password to the application of our docker image, one of the most easy and used way to set a Dynamic password is to use environment variables. All you have to do is have a .env file and set the password inside it, then use it inside your docker-compose.yml file. But this is not the most secure way to do it. Environment variables are stored in plain text and can be accessed by anyone who has access to the container. They can be seen with a simple `docker inspect` command or by reading the /proc filesystem inside the container.
+
+Docker Secrets on the other hand are encrypted at rest and in transit. They are only available to the services that have been granted access to them and are mounted as files inside the container at `/run/secrets/<secret_name>`. This makes them a lot more secure than environment variables as they are not exposed in the container's environment and cannot be seen with a simple inspect command.
+
+Secrets are generaly used in Production for the final product while env is used for Development because they are pretty annoying to sustain as you have to create a file per secret and can't really group them in one file. It could be possible to group them but its not really the expected use of it. <br />
+So if you have a lot of different variables it can be more interesting to use env_file, especially if it is online only and people as if it setup well people should not have access to your docker internally and it wouldn't really be possible to use them. 
+
+In this project, I decided to not use docker secrets, because I wanted it the most customizable possible and added lots of environnment variable, that would just be annoying for everyone to create a file per variable and for me to document. It is a lot easier to setup and comprehend if everything is in one file, since the docker is here to setup a Website, clients would anyways not be able to access the docker containers and for the devs its just simpler to maintain. 
+
+###### Docker Network vs Host Network
+
+Docker provides different networking modes for containers. The two most common ones are the **bridge network** (Docker Network) and the **host network**.
+
+With the **Docker Network** (bridge mode), Docker creates an isolated virtual network for your containers. Each container gets its own IP address and they can communicate with each other through the network while being isolated from the host machine's network. You can control which ports are exposed to the outside world and which services can talk to each other. This is the mode we use in this project as it provides better isolation and security between the services.
+
+With the **Host Network**, the container shares the host machine's network stack directly. This means the container does not get its own IP address and instead uses the host's IP. While this can be slightly faster since there is no network translation layer, it removes the network isolation between the container and the host which is not ideal for a multi-service infrastructure like ours where we want each service to be properly isolated and only communicate through defined channels.
+
+In short, Docker Network gives you control and security while Host Network gives you simplicity and speed at the cost of isolation.
+
+###### Docker Volumes vs Bind Mounts
+
+When it comes to persisting data in Docker, there are two main options: **Docker Volumes** and **Bind Mounts**.
+
+**Bind Mounts** are the simplest way to persist data. They map a directory on the host machine directly to a directory inside the container. The problem with bind mounts is that they are entirely dependent on the host machine's filesystem structure. If you move your project to another machine, the paths might not exist or might point to different locations. They also give the container full access to the host directory which can be a security concern.
+
+**Docker Volumes** are managed entirely by Docker. They are stored in a part of the host filesystem that is managed by Docker (`/var/lib/docker/volumes/` by default) and non-Docker processes should not modify this data. Volumes are the preferred way to persist data in Docker because they are easier to back up, migrate and manage than bind mounts. They work on both Linux and Windows containers and can be safely shared among multiple containers.
+
+In this project, we use Docker Volumes to persist the WordPress files and the MariaDB database data. This way, even if the containers are destroyed and recreated, the data remains intact and consistent.
 
 ##### Alpine
 
@@ -42,3 +75,28 @@ II. It is also one of the most used linux distribution when hosting servers and 
 
 #### Personal note
 > The last bonus part requires you to add a service of your choice and justify its choice in the whole in perspective of the rest of the infrastructure. At first I wanted to add a self hosted Analytics service like Umami or Matomo but the latter did not have any CLI support at the time and I didn't have enough space in the school's VM to build Umami. So I went with another self hosted service I liked : Glance. it is a very simple, ✨ *stylish* ✨ and easy to use dashboard manager. I found it particularly interesting as it proposed a very unique docker management option that let you see the state of your dockers without having to go through docker ps inside the server while still be secured with a password. Which is a quite useful thing to have in a docker infrastructure where we would imagine it to be online, as you are not always able to directly access your dockers and see their current state.   
+
+## Instructions
+
+Here is a brief explanation of the available commands to manage the infrastructure and how to setup the project. For more extensive explanation go to the [DEV_DOC.md](https://github.com/Kamisenin/Inception/DEV_DOC.md) file given with this project
+
+To setup the project you first need to customize the passwords, mail, path etc using the [env_example](https://github.com/Kamisenin/Inception/srcs/env_example) given with the project and rename it into a ".env" file.
+The second thing that needs to be done is setting up the host name of your custom address, it can be done by accessing the /etc/hosts file using this command :
+```bash
+> sudo nano /etc/hosts
+```
+**Note :** You need to have sudo access <br />
+
+It will give you something like that, you just need to add an IP adress similar to what i put, do not change the first 3 letters but you can do what you want with the rest. And then write the domain name of your choice that you have put inside the env_example. This will act as your domain name, save the file and done ! <br />
+<img width="739" height="484" alt="image" src="https://github.com/user-attachments/assets/fae18814-6568-4bfb-9c2d-b5879c5832d6" />
+<br />
+
+You can now build and start the project using the rule `make` or `make setup` at the root repository of the project. To stop you can either down the containers using `make down` or clear completely form your disk using `make fclean` or `make sfclean` (needs sudo and I do not recommended to use it if you don't know what you are doing). The rest of the commands can be found In the [USER_DOC.md](https://github.com/Kamisenin/Inception/USER_DOC.md) file or [DEV_DOC.md](https://github.com/Kamisenin/Inception/DEV_DOC.md).
+
+## Resources
+
+- [Nginx Documentation](https://nginx.org/en/docs/)
+- [Docker Documentation](https://docs.docker.com/)
+- [WordPress CLI Documentation](https://developer.wordpress.org/cli/commands/)
+- [Glance GitHub](https://github.com/glanceapp/glance)
+- [Stéphane Vogrig's Inception](https://github.com/StephaneVogrig/23_Inception), which was very instructive and useful to compare to mine, I reused some of his code and norm, like the log function or check env_var or the entrypoint.sh naming (before it was setup_{name of service} I prefer like it is now)
