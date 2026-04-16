@@ -19,19 +19,10 @@ check_var() {
 check_var "DATA_PATH" $DATA_PATH
 check_var "DOMAIN_NAME" $DOMAIN_NAME
 
-if [ ! -d "${DATA_PATH}/data/db" ]; then
-    mkdir -p "${DATA_PATH}/data/db"
+if [ ! -d "${DATA_PATH}/data/db-data" ]; then
+    mkdir -p "${DATA_PATH}/data/db-data"
 fi
 
-
-if [ ! -d "${DATA_PATH}/data/wordpress" ]; then
-    mkdir -p "${DATA_PATH}/data/wordpress"
-fi
-
-if [ ! -d "${DATA_PATH}/data/umami" ]; then
-    mkdir -p "${DATA_PATH}/data/umami"
-fi
-
-if [ ! -d "${DATA_PATH}/data/postgre" ]; then
-    mkdir -p "${DATA_PATH}/data/postgre"
+if [ ! -d "${DATA_PATH}/data/wp-data" ]; then
+    mkdir -p "${DATA_PATH}/data/wp-data"
 fi
