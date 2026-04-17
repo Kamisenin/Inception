@@ -21,5 +21,4 @@ check_var "DOMAIN_NAME" $DOMAIN_NAME
 export DOLLAR="$"
 
 envsubst < /bin/server.template > /etc/nginx/http.d/server.conf
-cat /etc/nginx/http.d/server.conf
 exec "$@"
