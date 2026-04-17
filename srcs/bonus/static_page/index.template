@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inception — Bienvenue</title>
+  <title>Inception - Welcome</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
@@ -170,24 +170,22 @@
   <div class="container">
 
     <header>
-      <p class="eyebrow">Projet 42</p>
-      <h1>Bienvenue sur<br /><em>Inception</em></h1>
+      <h1>Welcome to<br /><em>Inception</em></h1>
       <p class="subtitle">
-        Infrastructure conteneurisée · Docker &amp; services web.<br />
-        Choisissez un service ci-dessous pour commencer.
+        Select a service below to get started
       </p>
     </header>
 
     <div class="divider"></div>
 
-    <p class="links-label">Services disponibles</p>
+    <p class="links-label">Available Services</p>
     <ul class="links">
 
       <li>
         <a href="https://${DOMAIN_NAME}">
           <span>
             <span class="link-path">/wordpress</span><br />
-            <span class="link-desc">Site WordPress</span>
+            <span class="link-desc">WordPress website</span>
           </span>
           <span class="link-arrow">→</span>
         </a>
@@ -197,7 +195,7 @@
         <a href="https://${DOMAIN_NAME}/adminer">
           <span>
             <span class="link-path">/adminer</span><br />
-            <span class="link-desc">Gestion de base de données</span>
+            <span class="link-desc">Database Manager</span>
           </span>
           <span class="link-arrow">→</span>
         </a>
@@ -207,7 +205,7 @@
         <a href="https://${DOMAIN_NAME}/glance">
           <span>
             <span class="link-path">/glance</span><br />
-            <span class="link-desc">Tableau de bord système</span>
+            <span class="link-desc">Dashboard system</span>
           </span>
           <span class="link-arrow">→</span>
         </a>
@@ -217,7 +215,7 @@
         <a href="https://${DOMAIN_NAME}/welcome">
           <span>
             <span class="link-path">/welcome</span><br />
-            <span class="link-desc">Cette page</span>
+            <span class="link-desc">Current Page</span>
           </span>
           <span class="link-arrow">→</span>
         </a>
@@ -227,7 +225,7 @@
 
     <div class="domain-badge">
       <div class="dot"></div>
-      Hébergé sur <span>${DOMAIN_NAME}</span>
+      Hosted on <span>${DOMAIN_NAME}</span>
     </div>
 
   </div>
