@@ -1,4 +1,4 @@
-FROM alpine:3.21.5
+FROM alpine:3.22.4
 
 COPY conf/glance.yml /var/glance/glance.yml
 COPY entrypoint.sh  /bin/entrypoint.sh
@@ -11,7 +11,5 @@ RUN wget https://github.com/glanceapp/glance/releases/download/v0.8.4/glance-lin
     && tar -xzf glance.tar.gz \
     && rm -rf glance.tar.gz \
     && chmod +x /var/glance/glance
-
-EXPOSE 8081
 
 ENTRYPOINT ["/bin/entrypoint.sh"]

@@ -1,4 +1,4 @@
-FROM alpine:3.21.5
+FROM alpine:3.22.4
 
 RUN apk update \
     && apk upgrade \
@@ -15,7 +15,5 @@ RUN mkdir -p /var/www/html
 WORKDIR /var/www/html
 
 RUN wget -O index.php https://github.com/vrana/adminer/releases/download/v5.4.1/adminer-5.4.1-en.php
-
-EXPOSE 8080
 
 CMD ["php84", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]

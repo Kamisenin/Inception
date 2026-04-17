@@ -1,4 +1,4 @@
-FROM alpine:3.21.5
+FROM alpine:3.22.4
 
 RUN apk update \
 	&& apk upgrade \
@@ -24,8 +24,6 @@ RUN mkdir -p /etc/nginx/ssl/ \
 		-out /etc/nginx/ssl/wordpress.crt \
 		-keyout /etc/nginx/ssl/wordpress.key \
 		-subj "/C=FR/ST=NA/L=Angouleme/O=42/OU=42/CN=${DOMAIN_NAME}/UID=csenelle"
-
-EXPOSE 443
 
 ENTRYPOINT ["/bin/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
