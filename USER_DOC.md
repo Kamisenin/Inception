@@ -33,7 +33,7 @@ The Inception stack deploys the following services, each running in its own isol
 | **Glance** | `glance` | Self-hosted dashboard that displays the real-time state of every container in the stack. Protected by password. |
 | **Static Page** | `static_page` | A simple static welcome page served independently from WordPress. |
 
-All services restart automatically on failure (`restart: on-failure`).
+All services restart automatically on failure (`restart: unless-stopped`).
 
 ---
 
