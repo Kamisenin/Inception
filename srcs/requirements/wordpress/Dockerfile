@@ -42,6 +42,4 @@ RUN chmod +x /bin/entrypoint.sh
 
 WORKDIR /var/www/html
 
-EXPOSE 9000
-
 ENTRYPOINT ["/bin/entrypoint.sh"]
