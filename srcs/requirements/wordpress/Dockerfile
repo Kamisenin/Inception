@@ -37,9 +37,12 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 COPY conf/php.ini /etc/php84/php.ini
 COPY conf/www.conf /etc/php84/php-fpm.d/
 
+
 COPY entrypoint.sh /bin/entrypoint.sh
 RUN chmod +x /bin/entrypoint.sh
 
 WORKDIR /var/www/html
+
+EXPOSE 9000
 
 ENTRYPOINT ["/bin/entrypoint.sh"]
